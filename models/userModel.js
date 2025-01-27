@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const passwordRegex = /^(?=.*[A-Z])(?=.*[\W]).{8,}$/;
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,13 +22,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      validate: {
-        validator: function (value) {
-          return passwordRegex.test(value);
-        },
-        message:
-          "Password must be at least 8 characters long, include at least one uppercase letter, and one special character.",
-      },
     },
     role: {
       type: String,

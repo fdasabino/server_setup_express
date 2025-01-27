@@ -1,8 +1,62 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
+const passwordRegex = /^(?=.*[A-Z])(?=.*[\W]).{8,}$/;
+
 // > Create a new user
-const createUser = async (req, res) => {};
+const createUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
+  console.log(name, email, password, role);
+
+  if (!name || !name.length) {
+    return res.status(400).json({ message: "Name cannot be empty" });
+  }
+
+  if (!email || !email.length) {
+    return res.status(400).json({ message: "Email cannot be empty" });
+  }
+
+  // check if the password is valid
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      message:
+        "Password must contain at least 8 characters, one uppercase letter and one special character",
+    });
+  }
+
+  if (!password || password.length < 8) {
+    return res
+      .status(400)
+      .json({ message: "Password cannot be empty or less than 8 characthers!" });
+  }
+
+  // check if the user already exists
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists!" });
+  }
+
+  // hash the password
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const newUser = new User({
+    name,
+    email,
+    password: hashedPassword,
+    role,
+  });
+
+  try {
+    const savedUser = await newUser.save();
+    res.status(201).json({
+      message: "User created successfully!",
+      user: savedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // > Update a user
 const updateUser = async (req, res) => {};
