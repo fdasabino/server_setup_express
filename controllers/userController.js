@@ -6,7 +6,6 @@ const passwordRegex = /^(?=.*[A-Z])(?=.*[\W]).{8,}$/;
 // > Create a new user
 const createUser = async (req, res) => {
   const { name, email, password, role } = req.body;
-  console.log(name, email, password, role);
 
   if (!name || !name.length) {
     return res.status(400).json({ message: "Name cannot be empty" });
