@@ -43,7 +43,7 @@ const createUser = async (req, res) => {
     name,
     email,
     password: hashedPassword,
-    role,
+    role: role || "user",
   });
 
   try {
@@ -61,7 +61,22 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {};
 
 // ! Delete a user
-const deleteUser = async (req, res) => {};
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userToDelete = await User.findById(id);
+
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "User deleted successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // * Get all users
 const getAllUsers = async (req, res) => {
