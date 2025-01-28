@@ -64,7 +64,19 @@ const updateUser = async (req, res) => {};
 const deleteUser = async (req, res) => {};
 
 // * Get all users
-const getAllUsers = async (req, res) => {};
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found!" });
+    }
+
+    return res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // * Get a user by id
 const getUserById = async (req, res) => {};
